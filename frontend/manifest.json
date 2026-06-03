@@ -1,0 +1,13 @@
+{
+  "name": "1Day1Sport",
+  "short_name": "1D1S",
+  "description": "Tracker sport & santé héroïque 8 semaines",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1a",
+  "theme_color": "#e23636",
+  "icons": [
+    { "src": "https://via.placeholder.com/192x192/e23636/ffffff?text=1D1S", "sizes": "192x192", "type": "image/png" },
+    { "src": "https://via.placeholder.com/512x512/e23636/ffffff?text=1D1S", "sizes": "512x512", "type": "image/png" }
+  ]
+}
