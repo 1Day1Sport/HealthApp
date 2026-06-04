@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦸 1Day1Sport</title>
+<link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--p:#00b894;--pd:#00816a;--s:#0984e3;--mv:#e23636;--mg:#f0b429;--d:#d63031;--w:#fdcb6e;
+--bg:#0a0f1a;--bg2:#111827;--bg3:#1c2535;--card:#161f2e;--tx:#e8f4f8;--tm:#7a9ab5;--br:#243447;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+
+/* AUTH */
+#AUTH{position:fixed;inset:0;background:var(--bg);z-index:300;overflow-y:auto;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.auth-wrap{max-width:400px;width:100%}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo-ico{font-size:3.5rem}
+.auth-logo-t{font-size:1.8rem;font-weight:900;background:linear-gradient(90deg,var(--mv),var(--mg));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-logo-sub{font-size:.82rem;color:var(--tm);margin-top:4px}
+.auth-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:24px;margin-bottom:12px}
+.auth-t{font-size:1.05rem;font-weight:800;margin-bottom:4px}
+.auth-sub{font-size:.8rem;color:var(--tm);margin-bottom:18px}
+.auth-inp{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:8px;color:var(--tx);padding:11px 13px;font-size:.95rem;outline:none;margin-bottom:10px;font-family:inherit;transition:border .2s}
+.auth-inp:focus{border-color:var(--p)}
+.auth-code{font-size:1.6rem;letter-spacing:8px;text-align:center;font-weight:900}
+.auth-btn{width:100%;padding:13px;border-radius:10px;border:none;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.auth-btn-mv{background:linear-gradient(135deg,var(--mv),#c0392b);color:#fff}
+.auth-btn-mv:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(226,54,54,.4)}
+.auth-btn-g{background:var(--bg3);color:var(--tm);border:2px solid var(--br)}
+.auth-btn-g:hover{border-color:var(--p);color:var(--p)}
+.auth-err{color:var(--d);font-size:.8rem;text-align:center;margin-top:4px;min-height:18px}
+.auth-switch{text-align:center;font-size:.8rem;color:var(--tm);cursor:pointer;padding:6px}
+.auth-switch span{color:var(--p);font-weight:700}
+
+/* ONBOARDING */
+#OB{position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;padding:20px;display:flex;flex-direction:column;align-items:center;display:none}
+.ob-wrap{max-width:520px;width:100%;padding-bottom:60px}
+.ob-hero{text-align:center;padding:24px 0 12px}
+.ob-logo{font-size:3rem}
+.ob-title{font-size:1.6rem;font-weight:900;background:linear-gradient(90deg,var(--mv),var(--mg));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ob-sub{font-size:.82rem;color:var(--tm);margin-top:4px}
+.ob-dots{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.od{width:10px;height:10px;border-radius:50%;background:var(--br);transition:all .3s}
+.od.active{background:var(--mv);transform:scale(1.3)}
+.od.done{background:var(--p)}
+.ob-step{display:none}.ob-step.active{display:block}
+.ob-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.ob-stitle{font-size:1rem;font-weight:800;margin-bottom:3px}
+.ob-ssub{font-size:.8rem;color:var(--tm);margin-bottom:14px}
+.ob-inp{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:8px;color:var(--tx);padding:9px 11px;font-size:.88rem;outline:none;margin-bottom:9px;font-family:inherit}
+.ob-inp:focus{border-color:var(--p)}
+.ob-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ob-opt{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:2px solid var(--br);background:var(--bg3);cursor:pointer;margin-bottom:7px;transition:all .2s;user-select:none}
+.ob-opt:hover{border-color:var(--p)}
+.ob-opt.sel{border-color:var(--mv);background:rgba(226,54,54,.12)}
+.ob-opt-ico{font-size:1.3rem;flex-shrink:0}
+.ob-opt-t{font-size:.86rem;font-weight:700}
+.ob-opt-d{font-size:.73rem;color:var(--tm)}
+.ob-cbg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ob-cb{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:8px;border:2px solid var(--br);background:var(--bg3);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s;user-select:none}
+.ob-cb:hover{border-color:var(--p)}
+.ob-cb.sel{border-color:var(--p);background:rgba(0,184,148,.12);color:var(--p)}
+.slbl{font-size:.7rem;color:var(--tm);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin:10px 0 7px}
+.ob-rng{margin-bottom:12px}
+.ob-rng label{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px}
+.ob-rng label span:last-child{font-weight:800;color:var(--mv)}
+.ob-nav{display:flex;gap:10px;margin-top:14px}
+.ob-btn{flex:1;padding:12px;border-radius:10px;border:none;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s}
+.ob-next{background:linear-gradient(135deg,var(--mv),#c0392b);color:#fff}
+.ob-next:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(226,54,54,.4)}
+.ob-back{background:var(--bg3);color:var(--tm);border:2px solid var(--br)}
+.ob-sum-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--br);font-size:.8rem}
+.ob-sum-row:last-child{border:none}
+.ob-sum-l{color:var(--tm)}
+.ob-sum-v{font-weight:800;color:var(--p);text-align:right;max-width:60%}
+
+/* APP */
+#APP{display:none}
+.hdr{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:12px 15px 8px;border-bottom:1px solid var(--br);position:sticky;top:0;z-index:100}
+.hdr-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.logo{font-size:1.2rem;font-weight:900;background:linear-gradient(90deg,var(--mv),var(--mg));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.wk-badge{background:var(--mv);color:#fff;padding:3px 10px;border-radius:20px;font-size:.76rem;font-weight:800}
+.pchip{background:var(--bg3);border:1px solid var(--br);border-radius:20px;padding:3px 9px;font-size:.71rem;color:var(--tm);cursor:pointer}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--tm);display:inline-block;margin-left:4px}
+.sync-dot.online{background:var(--p)}
+.gbar-wrap{background:var(--bg);border-radius:8px;height:5px;overflow:hidden}
+.gbar{height:100%;background:linear-gradient(90deg,var(--mv),var(--mg));border-radius:8px;transition:width .5s}
+.plbl{display:flex;justify-content:space-between;font-size:.68rem;color:var(--tm);margin-top:2px}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--br);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 12px;font-size:.75rem;font-weight:700;color:var(--tm);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.tab.active{color:var(--mv);border-bottom-color:var(--mv)}
+.tab:hover{color:var(--tx);background:var(--bg3)}
+.content{padding:12px;max-width:900px;margin:0 auto}
+.pg{display:none}.pg.active{display:block}
+.card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:15px;margin-bottom:11px;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.card-t{font-size:.88rem;font-weight:800;margin-bottom:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hcard{background:linear-gradient(135deg,rgba(226,54,54,.08),rgba(240,180,41,.05));border-color:rgba(240,180,41,.2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+@media(max-width:540px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr 1fr}}
+.sbox{background:var(--bg3);border-radius:10px;padding:11px;text-align:center;border:1px solid var(--br)}
+.sv{font-size:1.55rem;font-weight:900;color:var(--p);line-height:1}
+.sv.rc{color:var(--mv)}
+.su{font-size:.68rem;color:var(--tm);margin-top:2px}
+.h-name{font-size:1rem;font-weight:900;color:var(--mg)}
+.h-rank{font-size:.71rem;color:var(--tm)}
+.h-bw{background:var(--bg);border-radius:8px;height:7px;overflow:hidden;margin-top:6px}
+.h-bf{height:100%;background:linear-gradient(90deg,var(--mv),var(--mg));border-radius:8px;transition:width .6s}
+
+/* CHECKLIST ITEMS */
+.ci{display:flex;align-items:flex-start;gap:9px;padding:10px 7px;border-radius:8px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--br)}
+.ci:last-child{border:none}
+.ci:hover{background:var(--bg3)}
+.cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--br);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.82rem;margin-top:1px}
+.ci.on .cb{background:var(--p);border-color:var(--p)}
+.ci.on .cl-title{text-decoration:line-through;color:var(--tm)}
+.cl-wrap{flex:1}
+.cl-title{font-size:.83rem;font-weight:700}
+.cl-desc{font-size:.74rem;color:var(--tm);margin-top:2px;line-height:1.5}
+.cl-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center}
+.cl-dur{font-size:.67rem;background:rgba(9,132,227,.15);color:var(--s);border-radius:10px;padding:2px 7px;font-weight:700}
+.cp{background:rgba(240,180,41,.14);border-radius:12px;padding:2px 7px;font-size:.67rem;color:var(--mg);font-weight:800}
+
+/* STRETCH CARDS */
+.stretch-section{background:linear-gradient(135deg,rgba(9,132,227,.06),rgba(0,184,148,.04));border:1px solid rgba(9,132,227,.2);border-radius:var(--r);padding:15px;margin-bottom:11px}
+.stretch-t{font-size:.88rem;font-weight:800;margin-bottom:11px;color:var(--s);display:flex;align-items:center;gap:6px}
+.sc{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:11px;margin-bottom:7px}
+.sc:last-child{margin-bottom:0}
+
+/* SLIDERS */
+.sg{margin-bottom:10px}
+.sl{display:flex;justify-content:space-between;margin-bottom:3px;font-size:.78rem}
+.sl span:last-child{font-weight:800;color:var(--p)}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--bg3);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--p);cursor:pointer;border:2px solid var(--bg)}
+input[type=range].rd::-webkit-slider-thumb{background:var(--d)}
+input[type=range].yw::-webkit-slider-thumb{background:var(--w)}
+input[type=range].mv::-webkit-slider-thumb{background:var(--mv)}
+
+/* DRINKS */
+.dt{display:flex;gap:5px;flex-wrap:wrap}
+.db{width:38px;height:38px;border-radius:8px;border:2px solid var(--br);background:var(--bg3);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.db.sg-on{border-color:var(--d);background:rgba(214,48,49,.2)}
+.db.wt-on{border-color:var(--s);background:rgba(9,132,227,.2)}
+.db:hover{transform:scale(1.1)}
+
+/* ACTIVITIES */
+.ag{display:flex;flex-wrap:wrap;gap:6px}
+.ab{padding:6px 11px;border-radius:20px;border:2px solid var(--br);background:var(--bg3);color:var(--tm);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s;user-select:none}
+.ab.on{border-color:var(--p);background:rgba(0,184,148,.14);color:var(--p)}
+.ab.personal{border-style:dashed;border-color:var(--mv)}
+
+/* INPUTS */
+.ig{margin-bottom:9px}
+.ig label{display:block;font-size:.76rem;color:var(--tm);margin-bottom:2px;font-weight:700}
+.ig input,.ig textarea{width:100%;background:var(--bg3);border:1px solid var(--br);border-radius:8px;color:var(--tx);padding:8px 10px;font-size:.85rem;outline:none;font-family:inherit;transition:border .2s}
+.ig input:focus,.ig textarea:focus{border-color:var(--p)}
+.ig textarea{resize:vertical;min-height:55px}
+
+/* BUTTONS */
+.btn{padding:8px 15px;border-radius:8px;border:none;font-size:.81rem;font-weight:800;cursor:pointer;transition:all .2s}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}
+.btn-mv{background:linear-gradient(135deg,var(--mv),#c0392b);color:#fff}
+.btn-mv:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(226,54,54,.4)}
+.btn-g{background:transparent;border:2px solid var(--br);color:var(--tm)}
+.btn-g:hover{border-color:var(--p);color:var(--p)}
+.btn-g.on{border-color:var(--mv);color:var(--mv)}
+.btn-sm{padding:5px 11px;font-size:.74rem}
+
+/* BADGES */
+.bg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.mb{text-align:center;padding:12px 6px;background:var(--bg3);border-radius:11px;border:2px solid var(--br);transition:all .3s;position:relative;overflow:hidden}
+.mb.earned{border-color:var(--mg);background:linear-gradient(135deg,rgba(226,54,54,.12),rgba(240,180,41,.07))}
+.bi{font-size:1.8rem;display:block;filter:grayscale(1) opacity(.2);transition:all .4s;margin-bottom:4px}
+.mb.earned .bi{filter:none;transform:scale(1.1)}
+.bh{font-size:.62rem;font-weight:900;color:var(--tm);text-transform:uppercase;line-height:1.2}
+.mb.earned .bh{color:var(--mg)}
+.bpow{font-size:.57rem;color:var(--tm);margin-top:2px;line-height:1.3}
+.blk{position:absolute;top:4px;right:4px;font-size:.56rem;opacity:.3}
+.mb.earned .blk{display:none}
+
+/* WEEKS */
+.wcard{border:2px solid var(--br);border-radius:10px;padding:11px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.wcard:hover{border-color:var(--p);background:var(--bg3)}
+.wcard.curr{border-color:var(--mv);background:rgba(226,54,54,.06)}
+.wcard.done{border-color:var(--tm);opacity:.75}
+.pbadge{font-size:.64rem;padding:2px 7px;border-radius:12px;font-weight:800}
+.ph1{background:rgba(0,184,148,.2);color:var(--p)}
+.ph2{background:rgba(9,132,227,.2);color:var(--s)}
+.ph3{background:rgba(226,54,54,.2);color:var(--mv)}
+.ddot{width:18px;height:18px;border-radius:50%;background:var(--bg3);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:.54rem;color:var(--tm)}
+.ddot.done{background:var(--p);border-color:var(--p);color:#fff}
+
+/* CHARTS */
+.cw{position:relative;height:180px;margin-top:6px}
+
+/* PROGRAM TABLE */
+.pt{width:100%;border-collapse:collapse;font-size:.75rem}
+.pt th{background:var(--bg3);color:var(--tm);padding:6px 7px;text-align:left;border-bottom:2px solid var(--br)}
+.pt td{padding:6px 7px;border-bottom:1px solid var(--br);vertical-align:top}
+.pt tr:hover td{background:var(--bg3)}
+.ie{color:#00b894}.im{color:#fdcb6e}.ih{color:#e23636}
+
+/* QUOTE */
+.qcard{background:linear-gradient(135deg,rgba(226,54,54,.09),rgba(240,180,41,.04));border:1px solid rgba(226,54,54,.22);border-radius:var(--r);padding:14px;text-align:center;margin-bottom:11px}
+.qt{font-size:.86rem;font-style:italic;line-height:1.6}
+.qa{font-size:.68rem;color:var(--tm);margin-top:4px}
+
+/* CONSEIL */
+.conseil-card{border-radius:var(--r);padding:13px;margin-bottom:11px;border:1px solid}
+.conseil-card.type-ok{background:rgba(0,184,148,.07);border-color:rgba(0,184,148,.3)}
+.conseil-card.type-warn{background:rgba(253,203,110,.07);border-color:rgba(253,203,110,.3)}
+.conseil-card.type-alert{background:rgba(214,48,49,.07);border-color:rgba(214,48,49,.3)}
+.conseil-ico{font-size:1.3rem;margin-bottom:4px}
+.conseil-t{font-size:.83rem;font-weight:800;margin-bottom:3px}
+.conseil-txt{font-size:.77rem;color:var(--tm);line-height:1.5}
+
+/* BREATHING */
+#bCircle{width:82px;height:82px;border-radius:50%;background:rgba(226,54,54,.1);border:3px solid var(--mv);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:var(--mv);cursor:pointer;transition:all .5s}
+
+/* ALERTS */
+.pal{display:flex;align-items:flex-start;gap:7px;padding:10px 12px;border-radius:10px;margin-bottom:7px;font-size:.77rem;border:1px solid}
+.pal.inf{background:rgba(0,184,148,.08);border-color:rgba(0,184,148,.3)}
+.pal.wrn{background:rgba(253,203,110,.07);border-color:rgba(253,203,110,.3)}
+
+/* TAG */
+.tag{display:inline-block;padding:2px 7px;border-radius:12px;font-size:.65rem;font-weight:800}
+.tr{background:rgba(226,54,54,.2);color:#ff7675}
+.ty{background:rgba(240,180,41,.2);color:var(--mg)}
+.tg{background:rgba(0,184,148,.2);color:var(--p)}
+.ts{background:rgba(9,132,227,.2);color:var(--s)}
+
+/* VICTORIES */
+.vlist{list-style:none}
+.vi{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--br);font-size:.81rem}
+.vi:last-child{border:none}
+
+/* MISC */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
+.nodata{text-align:center;color:var(--tm);padding:22px;font-size:.78rem}
+.nodata .ndi{font-size:2rem;margin-bottom:5px}
+.fab{position:fixed;bottom:16px;right:16px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--mv),#c0392b);border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 18px rgba(226,54,54,.5);z-index:50;transition:all .2s}
+.fab:hover{transform:scale(1.12)}
+#TOAST{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(130px);background:linear-gradient(135deg,var(--mv),#c0392b);color:#fff;padding:10px 20px;border-radius:30px;font-weight:800;font-size:.83rem;z-index:9999;transition:transform .35s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 18px rgba(226,54,54,.5)}
+#TOAST.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="TOAST"></div>
+
+<!-- ══════════════ AUTH ══════════════ -->
+<div id="AUTH">
+<div class="auth-wrap">
+  <div class="auth-logo">
+    <div class="auth-logo-ico">🦸</div>
+    <div class="auth-logo-t">1DAY1SPORT</div>
+    <div class="auth-logo-sub">Tracker héroïque · 8 semaines · Sans salle</div>
+  </div>
+
+  <!-- Choix initial -->
+  <div id="authHome">
+    <button class="auth-btn auth-btn-mv" onclick="showAuthPanel('login')" style="margin-bottom:10px">🔑 J'ai déjà un compte</button>
+    <button class="auth-btn auth-btn-g" onclick="startOnboarding()">🦸 Créer mon profil héros</button>
+  </div>
+
+  <!-- Connexion -->
+  <div id="authLogin" style="display:none">
+    <div class="auth-card">
+      <div class="auth-t">🔑 Connexion</div>
+      <div class="auth-sub">Ton prénom + ton code personnel 6 chiffres</div>
+      <input class="auth-inp" id="loginName" placeholder="Ton prénom" autocomplete="off">
+      <input class="auth-inp auth-code" id="loginCode" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
+      <div class="auth-err" id="loginErr"></div>
+      <button class="auth-btn auth-btn-mv" onclick="doLogin()">Se connecter →</button>
+    </div>
+    <div class="auth-switch" onclick="showAuthPanel('home')">← <span>Retour</span></div>
+  </div>
+
+  <!-- Choix code (après onboarding) -->
+  <div id="authCode" style="display:none">
+    <div class="auth-card">
+      <div class="auth-t">🔐 Choisis ton code personnel</div>
+      <div class="auth-sub">6 chiffres — tu en auras besoin pour te reconnecter</div>
+      <input class="auth-inp auth-code" id="newCode1" type="password" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
+      <input class="auth-inp auth-code" id="newCode2" type="password" inputmode="numeric" maxlength="6" placeholder="Confirme ton code">
+      <div class="auth-err" id="codeErr"></div>
+      <button class="auth-btn auth-btn-mv" onclick="doRegister()">🚀 Lancer mon aventure !</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ ONBOARDING ══════════════ -->
+<div id="OB">
+<div class="ob-wrap">
+  <div class="ob-hero">
+    <div class="ob-logo">🦸</div>
+    <div class="ob-title">1DAY1SPORT</div>
+    <div class="ob-sub">Programme personnalisé · 8 semaines · Sans salle</div>
+  </div>
+  <div class="ob-dots" id="obDots"></div>
+
+  <div class="ob-step active" id="obs1">
+    <div class="ob-card">
+      <div class="ob-stitle">👤 Qui es-tu ?</div>
+      <div class="ob-ssub">Ces données personnalisent entièrement ton programme</div>
+      <input class="ob-inp" id="oName" placeholder="Ton prénom *">
+      <div class="ob-g2">
+        <input class="ob-inp" id="oAge" type="number" placeholder="Âge *" min="15" max="90">
+        <input class="ob-inp" id="oHeight" type="number" placeholder="Taille cm *" min="140" max="220">
+      </div>
+      <input class="ob-inp" id="oWeight" type="number" placeholder="Poids actuel kg *" step="0.5">
+      <input class="ob-inp" id="oGoalW" type="number" placeholder="Poids objectif kg (optionnel)" step="0.5">
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs2">
+    <div class="ob-card">
+      <div class="ob-stitle">🏃 Ton niveau sportif</div>
+      <div class="ob-ssub">Sois honnête — le programme s'adapte sans jugement</div>
+      <div class="ob-opt" data-g="level" data-v="beginner" onclick="selOpt(this)"><span class="ob-opt-ico">🌱</span><div><div class="ob-opt-t">Débutant / Reprise</div><div class="ob-opt-d">Peu d'activité ces derniers mois</div></div></div>
+      <div class="ob-opt" data-g="level" data-v="moderate" onclick="selOpt(this)"><span class="ob-opt-ico">🔥</span><div><div class="ob-opt-t">Actif modéré</div><div class="ob-opt-d">1-2 activités/semaine irrégulières</div></div></div>
+      <div class="ob-opt" data-g="level" data-v="active" onclick="selOpt(this)"><span class="ob-opt-ico">⚡</span><div><div class="ob-opt-t">Actif régulier</div><div class="ob-opt-d">2-3 activités/semaine régulières</div></div></div>
+      <div class="ob-opt" data-g="level" data-v="athlete" onclick="selOpt(this)"><span class="ob-opt-ico">🏆</span><div><div class="ob-opt-t">Sportif confirmé</div><div class="ob-opt-d">3+ séances/semaine</div></div></div>
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs3">
+    <div class="ob-card">
+      <div class="ob-stitle">🎯 Tes activités préférées</div>
+      <div class="ob-ssub">Sélectionne tout ce que tu pratiques</div>
+      <div class="ob-cbg">
+        <div class="ob-cb" data-g="act" data-v="padel" onclick="togCb(this)">🎾 Padel</div>
+        <div class="ob-cb" data-g="act" data-v="footing" onclick="togCb(this)">🏃 Footing</div>
+        <div class="ob-cb" data-g="act" data-v="kite" onclick="togCb(this)">🪁 Kite</div>
+        <div class="ob-cb" data-g="act" data-v="surf" onclick="togCb(this)">🏄 Surf</div>
+        <div class="ob-cb" data-g="act" data-v="roller" onclick="togCb(this)">🛼 Roller</div>
+        <div class="ob-cb" data-g="act" data-v="velo" onclick="togCb(this)">🚴 Vélo</div>
+        <div class="ob-cb" data-g="act" data-v="natation" onclick="togCb(this)">🏊 Natation</div>
+        <div class="ob-cb" data-g="act" data-v="marche" onclick="togCb(this)">🚶 Marche</div>
+        <div class="ob-cb" data-g="act" data-v="yoga" onclick="togCb(this)">🧘 Yoga</div>
+        <div class="ob-cb" data-g="act" data-v="gainage" onclick="togCb(this)">💪 Gainage</div>
+      </div>
+      <input class="ob-inp" id="oCustomAct" placeholder="Autre ? (ex: escalade)" style="margin-top:9px">
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs4">
+    <div class="ob-card">
+      <div class="ob-stitle">🍽️ Habitudes alimentaires</div>
+      <div class="ob-ssub">Aucun jugement — le programme s'adapte</div>
+      <div class="slbl">Boissons sucrées par jour</div>
+      <div class="ob-opt" data-g="sugar" data-v="0-1" onclick="selOpt(this)"><span class="ob-opt-ico">💧</span><div><div class="ob-opt-t">0 à 1 boisson</div><div class="ob-opt-d">Peu de boissons sucrées</div></div></div>
+      <div class="ob-opt" data-g="sugar" data-v="2-3" onclick="selOpt(this)"><span class="ob-opt-ico">🥤</span><div><div class="ob-opt-t">2 à 3 boissons</div><div class="ob-opt-d">Habitude modérée régulière</div></div></div>
+      <div class="ob-opt" data-g="sugar" data-v="4+" onclick="selOpt(this)"><span class="ob-opt-ico">🚨</span><div><div class="ob-opt-t">4+ boissons</div><div class="ob-opt-d">Forte dépendance sucrée</div></div></div>
+      <div class="slbl">Grignotages hors repas</div>
+      <div class="ob-opt" data-g="snack" data-v="low" onclick="selOpt(this)"><span class="ob-opt-ico">✅</span><div><div class="ob-opt-t">Peu de grignotages</div><div class="ob-opt-d">Occasionnel, contrôlé</div></div></div>
+      <div class="ob-opt" data-g="snack" data-v="medium" onclick="selOpt(this)"><span class="ob-opt-ico">⚠️</span><div><div class="ob-opt-t">Grignotages fréquents</div><div class="ob-opt-d">Plusieurs fois par jour</div></div></div>
+      <div class="ob-opt" data-g="snack" data-v="high" onclick="selOpt(this)"><span class="ob-opt-ico">🔴</span><div><div class="ob-opt-t">Grignotage compulsif</div><div class="ob-opt-d">Difficile à contrôler</div></div></div>
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs5">
+    <div class="ob-card">
+      <div class="ob-stitle">🧠 Stress & physique</div>
+      <div class="ob-ssub">Pour calibrer tes alertes quotidiennes</div>
+      <div class="ob-rng">
+        <label>Stress quotidien <span id="osv">6</span>/10</label>
+        <input type="range" class="mv" id="oStress" min="1" max="10" value="6" oninput="document.getElementById('osv').textContent=this.value">
+      </div>
+      <div class="ob-rng">
+        <label>Qualité sommeil <span id="oslv">5</span>/10</label>
+        <input type="range" id="oSleep" min="1" max="10" value="5" oninput="document.getElementById('oslv').textContent=this.value">
+      </div>
+      <div class="slbl">Zones douloureuses</div>
+      <div class="ob-cbg">
+        <div class="ob-cb" data-g="pain" data-v="ankles" onclick="togCb(this)">🦶 Chevilles</div>
+        <div class="ob-cb" data-g="pain" data-v="lower_back" onclick="togCb(this)">🦴 Lombaires</div>
+        <div class="ob-cb" data-g="pain" data-v="knees" onclick="togCb(this)">🦵 Genoux</div>
+        <div class="ob-cb" data-g="pain" data-v="shoulders" onclick="togCb(this)">💪 Épaules</div>
+        <div class="ob-cb" data-g="pain" data-v="hips" onclick="togCb(this)">⚙️ Hanches</div>
+        <div class="ob-cb" data-g="pain" data-v="none" onclick="togCb(this)">✅ Aucune douleur</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs6">
+    <div class="ob-card">
+      <div class="ob-stitle">🎯 Objectif principal</div>
+      <div class="ob-ssub">Guide chaque conseil du programme</div>
+      <div class="ob-opt" data-g="goal" data-v="weight" onclick="selOpt(this)"><span class="ob-opt-ico">⚖️</span><div><div class="ob-opt-t">Perte de poids durable</div><div class="ob-opt-d">Perdre du gras, sculpter la silhouette</div></div></div>
+      <div class="ob-opt" data-g="goal" data-v="health" onclick="selOpt(this)"><span class="ob-opt-ico">❤️</span><div><div class="ob-opt-t">Santé & bien-être</div><div class="ob-opt-d">Moins de douleurs, plus d'énergie</div></div></div>
+      <div class="ob-opt" data-g="goal" data-v="perf" onclick="selOpt(this)"><span class="ob-opt-ico">🚀</span><div><div class="ob-opt-t">Performance sportive</div><div class="ob-opt-d">Progresser en padel, surf, kite...</div></div></div>
+      <div class="ob-opt" data-g="goal" data-v="stress" onclick="selOpt(this)"><span class="ob-opt-ico">🧘</span><div><div class="ob-opt-t">Gestion du stress</div><div class="ob-opt-d">Anxiété, sommeil, équilibre</div></div></div>
+      <div class="slbl">Jours disponibles par semaine</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <div class="ob-cb" data-g="days" data-v="3" onclick="selSingle(this,'days')" style="flex:1;justify-content:center">3 j</div>
+        <div class="ob-cb" data-g="days" data-v="4" onclick="selSingle(this,'days')" style="flex:1;justify-content:center">4 j</div>
+        <div class="ob-cb" data-g="days" data-v="5" onclick="selSingle(this,'days')" style="flex:1;justify-content:center">5 j</div>
+        <div class="ob-cb" data-g="days" data-v="6" onclick="selSingle(this,'days')" style="flex:1;justify-content:center">6+ j</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ob-step" id="obs7">
+    <div class="ob-card hcard">
+      <div class="ob-stitle">🦸 Profil Héros prêt !</div>
+      <div class="ob-ssub">Programme personnalisé généré sur mesure</div>
+      <div id="obSum" style="background:var(--bg3);border-radius:10px;padding:13px;margin-top:7px"></div>
+    </div>
+    <div class="ob-card" style="text-align:center;background:linear-gradient(135deg,rgba(226,54,54,.1),rgba(240,180,41,.06));border-color:rgba(240,180,41,.3)">
+      <div style="font-size:2rem;margin-bottom:6px">⚡</div>
+      <div style="font-size:.95rem;font-weight:900;color:var(--mg)">PRÊT À DEVENIR TON MEILLEUR TOI ?</div>
+      <div style="font-size:.8rem;color:var(--tm);margin-top:4px">8 semaines · Progressif · Sans salle</div>
+    </div>
+  </div>
+
+  <div class="ob-nav">
+    <button class="ob-btn ob-back" id="oBk" onclick="obPrev()" style="display:none;flex:.5">← Retour</button>
+    <button class="ob-btn ob-next" id="oNx" onclick="obNext()">Continuer →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="APP">
+  <div class="hdr">
+    <div class="hdr-row">
+      <div class="logo">🦸 1DAY1SPORT</div>
+      <div class="hdr-r">
+        <div class="pchip" id="pChip">Profil 👤</div>
+        <span class="sync-dot" id="syncDot" title="Synchronisation"></span>
+        <div class="wk-badge" id="wkBadge">S1</div>
+      </div>
+    </div>
+    <div class="gbar-wrap"><div class="gbar" id="gBar" style="width:0%"></div></div>
+    <div class="plbl"><span id="pLbl">Phase 1</span><span id="pPct">0%</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="goPage('today',this)">🌅 Aujourd'hui</div>
+    <div class="tab" onclick="goPage('weeks',this)">📅 Semaines</div>
+    <div class="tab" onclick="goPage('measures',this)">📏 Mesures</div>
+    <div class="tab" onclick="goPage('progress',this)">📈 Progrès</div>
+    <div class="tab" onclick="goPage('program',this)">📋 Programme</div>
+    <div class="tab" onclick="goPage('badges',this)">🦸 Héros</div>
+  </div>
+  <div class="content">
+
+    <!-- TODAY -->
+    <div id="pg-today" class="pg active">
+      <div class="qcard"><div class="qt" id="dQuote"></div><div class="qa" id="dDate"></div></div>
+      <div class="card hcard">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:2.5rem" id="hEmo">🦸</div>
+          <div style="flex:1">
+            <div class="h-name" id="hName">Recrue S.H.I.E.L.D.</div>
+            <div class="h-rank" id="hRank">Niveau 1 · 0 XP</div>
+            <div class="h-bw"><div class="h-bf" id="hBar" style="width:0%"></div></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:1.4rem;font-weight:900;color:var(--mg)" id="strk">0</div>
+            <div style="font-size:.68rem;color:var(--tm)">🔥 jours</div>
+          </div>
+        </div>
+      </div>
+      <div id="alerts"></div>
+      <div id="conseilCard"></div>
+      <div class="g3" style="margin-bottom:11px">
+        <div class="sbox"><div class="sv rc" id="txpToday">0</div><div class="su">XP aujourd'hui</div></div>
+        <div class="sbox"><div class="sv" id="txpTotal">0</div><div class="su">XP total</div></div>
+        <div class="sbox"><div class="sv" id="txpWeek">0</div><div class="su">XP semaine</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-t">🦶 Routine Matinale <span class="tag tr" style="margin-left:auto;font-size:.59rem">AVANT DE POSER LE PIED</span></div>
+        <div id="mChecks"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-t">⚡ Activités du Jour</div>
+        <div class="ag" id="actGrid"></div>
+        <div style="margin-top:9px">
+          <div class="ig"><label>Durée totale (min)</label><input type="number" id="actDur" placeholder="ex: 45" min="0" max="360" oninput="calcXP()"></div>
+        </div>
+      </div>
+
+      <div id="stretchSection"></div>
+
+      <div class="card">
+        <div class="card-t">🥤 Boissons du Jour</div>
+        <div id="sugarWrap"></div>
+        <div class="slbl" style="margin-top:11px">Eau — objectif 8 verres/jour</div>
+        <div class="dt" id="waterWrap">
+          <div class="db" onclick="togDrink(this,'w',0)">💧</div><div class="db" onclick="togDrink(this,'w',1)">💧</div>
+          <div class="db" onclick="togDrink(this,'w',2)">💧</div><div class="db" onclick="togDrink(this,'w',3)">💧</div>
+          <div class="db" onclick="togDrink(this,'w',4)">💧</div><div class="db" onclick="togDrink(this,'w',5)">💧</div>
+          <div class="db" onclick="togDrink(this,'w',6)">💧</div><div class="db" onclick="togDrink(this,'w',7)">💧</div>
+        </div>
+        <div id="sFeedback" style="margin-top:7px;font-size:.77rem;color:var(--tm)"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-t">🎯 Ressentis du Jour</div>
+        <div id="feelWrap"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-t">🌬️ Respiration 4-7-8 <span class="tag ty" style="margin-left:4px">Anti-Craving</span></div>
+        <p style="font-size:.77rem;color:var(--tm);margin-bottom:10px">4 cycles = cortisol ↓, cravings ↓, stress ↓</p>
+        <div style="text-align:center">
+          <div id="bCircle" onclick="startBreath()">DÉMARRER</div>
+          <div id="bLbl" style="margin-top:7px;font-size:.77rem;color:var(--tm)">Clique pour commencer</div>
+          <div id="bCyc" style="font-size:.68rem;color:var(--tm);margin-top:2px"></div>
+        </div>
+        <div class="ci" data-k="breathing" onclick="togCheck(this)" style="margin-top:11px">
+          <div class="cb">✓</div>
+          <div class="cl-wrap"><div class="cl-title">4 cycles effectués</div></div>
+          <span class="cp">+15 XP</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-t">✍️ Victoire & Journal</div>
+        <div class="ig"><label>Ma victoire du jour 🏆</label><input type="text" id="victory" placeholder="ex: J'ai résisté à la boisson sucrée !"></div>
+        <div class="ig"><label>Notes libres</label><textarea id="notes" placeholder="Humeur, repas, observations..."></textarea></div>
+        <button class="btn btn-mv" style="width:100%" onclick="saveDay()">⚡ Valider ma journée héroïque</button>
+      </div>
+    </div>
+
+    <!-- WEEKS -->
+    <div id="pg-weeks" class="pg">
+      <div class="card"><div class="card-t">📅 8 Semaines</div><p style="font-size:.77rem;color:var(--tm)">Clique sur une semaine pour saisir tes données.</p></div>
+      <div id="wkContainer"></div>
+      <div id="wkDetail" class="card" style="display:none">
+        <div class="card-t" id="wkDetailTitle">Semaine X</div>
+        <div class="g2">
+          <div class="ig"><label>Poids fin de semaine (kg)</label><input type="number" id="wkW" step="0.1"></div>
+          <div class="ig"><label>Tour de taille (cm)</label><input type="number" id="wkT" step="0.5"></div>
+          <div class="ig"><label>Douleur moyenne /10</label><input type="number" id="wkP" min="0" max="10"></div>
+          <div class="ig"><label>Séances effectuées</label><input type="number" id="wkS" min="0" max="14"></div>
+        </div>
+        <div class="ig"><label>Boissons sucrées cette semaine</label><input type="number" id="wkSug" min="0"></div>
+        <div class="ig"><label>🏆 Victoire de la semaine</label><input type="text" id="wkVic"></div>
+        <div class="ig"><label>Ressenti général</label><textarea id="wkN"></textarea></div>
+        <div style="display:flex;gap:9px">
+          <button class="btn btn-mv" onclick="saveWeek()">💾 Enregistrer</button>
+          <button class="btn btn-g" onclick="document.getElementById('wkDetail').style.display='none'">Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEASURES -->
+    <div id="pg-measures" class="pg">
+      <div class="card">
+        <div class="card-t">📏 Nouvelle Mesure</div>
+        <div class="g2">
+          <div class="ig"><label>Poids (kg)</label><input type="number" id="mW" step="0.1"></div>
+          <div class="ig"><label>Tour de taille (cm)</label><input type="number" id="mT" step="0.5"></div>
+          <div class="ig"><label>Tour de hanches (cm)</label><input type="number" id="mH" step="0.5"></div>
+          <div class="ig"><label>Tour de bras (cm)</label><input type="number" id="mA" step="0.5"></div>
+        </div>
+        <button class="btn btn-p" onclick="saveMeasure()">📏 Enregistrer</button>
+      </div>
+      <div class="card">
+        <div class="card-t">📊 Tableau de Bord</div>
+        <div class="g2" id="mStats"></div>
+        <div style="margin-top:13px">
+          <div class="slbl">Progression objectif poids</div>
+          <div class="gbar-wrap" style="height:9px"><div class="gbar" id="wBar" style="width:0%"></div></div>
+          <div class="plbl"><span id="wBarL">Départ</span><span id="wBarR">—</span></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-t">📋 Historique</div><div id="mHist"><div class="nodata"><div class="ndi">📏</div>Aucune mesure encore</div></div></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="pg-progress" class="pg">
+      <div class="card"><div class="card-t">⚖️ Courbe de Poids</div><div class="cw"><canvas id="cW"></canvas></div></div>
+      <div class="card"><div class="card-t">📐 Tour de Taille</div><div class="cw"><canvas id="cT"></canvas></div></div>
+      <div class="card"><div class="card-t">⚡ Énergie & Douleurs</div><div class="cw"><canvas id="cE"></canvas></div></div>
+      <div class="card"><div class="card-t">🥤 Boissons Sucrées / Semaine</div><div class="cw"><canvas id="cS"></canvas></div></div>
+      <div class="card"><div class="card-t">🌟 XP Cumulés</div><div class="cw"><canvas id="cP"></canvas></div></div>
+    </div>
+
+    <!-- PROGRAM -->
+    <div id="pg-program" class="pg">
+      <div class="card"><div class="card-t">📋 Programme</div><div style="display:flex;flex-wrap:wrap;gap:5px" id="wkSel"></div></div>
+      <div id="progContent"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div id="pg-badges" class="pg">
+      <div class="card hcard">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-size:3.5rem" id="bhEmo">🦸</div>
+          <div style="flex:1">
+            <div class="h-name" id="bhName" style="font-size:1.2rem">Recrue S.H.I.E.L.D.</div>
+            <div class="h-rank" id="bhRank">Niveau 1</div>
+            <div class="h-bw" style="height:10px;margin-top:7px"><div class="h-bf" id="bhBar" style="width:0%"></div></div>
+            <div style="font-size:.7rem;color:var(--tm);margin-top:3px" id="bhXP">0 XP</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">🏅 Statistiques</div>
+        <div class="g2">
+          <div class="sbox"><div class="sv" id="bTotal">0</div><div class="su">XP Total</div></div>
+          <div class="sbox"><div class="sv rc" id="bEarned">0</div><div class="su">/18 Badges</div></div>
+          <div class="sbox"><div class="sv" id="bDays">0</div><div class="su">Jours actifs</div></div>
+          <div class="sbox"><div class="sv" id="bStreak">0</div><div class="su">Best streak 🔥</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-t">🦸 Collection Marvel</div><div class="bg-grid" id="bgGrid"></div></div>
+      <div class="card"><div class="card-t">🏆 Victoires</div><ul class="vlist" id="vList"><li style="color:var(--tm);font-size:.8rem;padding:7px 0">Aucune victoire encore — commence dès aujourd'hui !</li></ul></div>
+      <div class="card" style="border-style:dashed">
+        <div class="card-t" style="font-size:.78rem;color:var(--tm)">💾 Données</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-g btn-sm" onclick="exportData()">📤 Export JSON</button>
+          <button class="btn btn-g btn-sm" onclick="document.getElementById('impInput').click()">📥 Importer</button>
+          <button class="btn btn-g btn-sm" style="color:var(--d);border-color:var(--d)" onclick="doLogout()">🚪 Déconnexion</button>
+          <button class="btn btn-g btn-sm" style="color:var(--d);border-color:var(--d)" onclick="resetApp()">🗑️ Reset</button>
+        </div>
+        <div style="margin-top:6px;font-size:.68rem;color:var(--tm)">🔒 Données locales + synchronisées MongoDB</div>
+        <input type="file" id="impInput" style="display:none" accept=".json" onchange="doImport(event)">
+      </div>
+    </div>
+
+  </div>
+</div>
+<button class="fab" onclick="saveDay()">⚡</button>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+var API_URL = 'https://votre-api.onrender.com'; // ← mettre à jour après déploiement Render
+var JWT_KEY = 'sport_jwt';
+var VER = '2.1.0';
+
+function getToken() { return localStorage.getItem(JWT_KEY); }
+function setToken(t) { localStorage.setItem(JWT_KEY, t); }
+function clearToken() { localStorage.removeItem(JWT_KEY); }
+
+function apiHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+}
+
+function apiCall(method, path, body, cb) {
+  var opts = { method: method, headers: apiHeaders() };
+  if (body) opts.body = JSON.stringify(body);
+  fetch(API_URL + path, opts)
+    .then(function(r) {
+      setSyncDot(true);
+      if (r.status === 401) { doLogout(); return null; }
+      return r.json();
+    })
+    .then(function(data) { if (cb && data) cb(null, data); })
+    .catch(function(e) { setSyncDot(false); if (cb) cb(e, null); });
+}
+
+function setSyncDot(online) {
+  var d = document.getElementById('syncDot');
+  if (d) d.className = 'sync-dot' + (online ? ' online' : '');
+}
+
+// ═══════════════════════════════════════
+// DONNÉES STATIQUES
+// ═══════════════════════════════════════
+var QUOTES = [
+  ['Je ne me bats pas contre mon corps. Je travaille AVEC lui.','Philosophie'],
+  ['Chaque petite victoire compte.','Coach 1Day1Sport'],
+  ['Dans 8 semaines tu seras meilleur. C\'est tout ce qui compte.','Coach 1Day1Sport'],
+  ['Le sucre crie fort, mais il passe vite. Attends 5 minutes.','Neurosciences'],
+  ['La régularité est ton super-pouvoir.','Coach 1Day1Sport'],
+  ['Douleur matinale = ton corps qui demande 7 minutes d\'attention.','Coach 1Day1Sport'],
+  ['Le stress stocke les graisses. La respiration les libère.','Physiologie'],
+  ['Un corps qui bouge dort mieux, pense mieux.','Médecine sportive'],
+  ['Boire de l\'eau avant de chercher du sucre. Souvent c\'est la soif.','Nutrition'],
+  ['Sois indulgent avec toi comme avec un ami que tu aimes.','Psychologie positive'],
+  ['La progressivité n\'est pas de la faiblesse. C\'est de la stratégie.','Coach 1Day1Sport'],
+  ['Même Spider-Man a commencé par une seule toile.','Marvel'],
+  ['Captain America a juste voulu essayer. C\'est tout.','Marvel'],
+  ['Aujourd\'hui meilleur qu\'hier.','Coach 1Day1Sport'],
+  ['Le vrai super-pouvoir c\'est la constance.','Coach 1Day1Sport']
+];
+
+var LEVELS = [
+  {n:1,name:'Recrue S.H.I.E.L.D.',emo:'🦸',min:0,max:200},
+  {n:2,name:'Agent S.H.I.E.L.D.',emo:'🕵️',min:200,max:500},
+  {n:3,name:'Spider-Man',emo:'🕷️',min:500,max:900},
+  {n:4,name:'Faucon en Vol',emo:'🦅',min:900,max:1400},
+  {n:5,name:'Black Panther',emo:'🐱',min:1400,max:2000},
+  {n:6,name:'Captain America',emo:'🛡️',min:2000,max:2800},
+  {n:7,name:'Thor',emo:'⚡',min:2800,max:3800},
+  {n:8,name:'Iron Man',emo:'🤖',min:3800,max:5000},
+  {n:9,name:'Captain Marvel',emo:'🌟',min:5000,max:7000},
+  {n:10,name:'Avenger Légendaire',emo:'🏆',min:7000,max:99999}
+];
+
+var BADGES = [
+  {id:'b1',ico:'🕷️',hero:'Spider-Man',pow:'Premier Pas',desc:'1ère journée',chk:function(d){return ol(d.days)>=1;}},
+  {id:'b2',ico:'😎',hero:'Nick Fury',pow:'Opération S1',desc:'7 jours enregistrés',chk:function(d){return ol(d.days)>=7;}},
+  {id:'b3',ico:'🔥',hero:'Ghost Rider',pow:'En Feu !',desc:'3 jours consécutifs',chk:function(d){return (d.maxStreak||0)>=3;}},
+  {id:'b4',ico:'⚡',hero:'Thor',pow:'Dieu du Tonnerre',desc:'7 jours consécutifs',chk:function(d){return (d.maxStreak||0)>=7;}},
+  {id:'b5',ico:'🛡️',hero:'Captain America',pow:'Super Soldat',desc:'14 jours consécutifs',chk:function(d){return (d.maxStreak||0)>=14;}},
+  {id:'b6',ico:'🌀',hero:'Doctor Strange',pow:'Maître du Corps',desc:'10 routines matinales',chk:function(d){return (d.morningCnt||0)>=10;}},
+  {id:'b7',ico:'🧘',hero:'Ancient One',pow:'Maîtrise',desc:'30 routines matinales',chk:function(d){return (d.morningCnt||0)>=30;}},
+  {id:'b8',ico:'🔴',hero:'Scarlet Witch',pow:'Détox',desc:'1 jour sans sucre',chk:function(d){return (d.zeroDays||0)>=1;}},
+  {id:'b9',ico:'💎',hero:'Vision',pow:'Conscience Pure',desc:'7 jours sans sucre',chk:function(d){return (d.zeroDays||0)>=7;}},
+  {id:'b10',ico:'🌊',hero:'Sub-Mariner',pow:'Hydraté',desc:'8 verres en 1 jour',chk:function(d){return (d.water8||0)>=1;}},
+  {id:'b11',ico:'🏹',hero:'Hawkeye',pow:'Œil de Faucon',desc:'5 sessions padel',chk:function(d){return ((d.acts&&d.acts.padel)||0)>=5;}},
+  {id:'b12',ico:'🪁',hero:'Silver Surfer',pow:'Surfeur',desc:'5 sessions surf+kite',chk:function(d){return (((d.acts&&d.acts.surf)||0)+((d.acts&&d.acts.kite)||0))>=5;}},
+  {id:'b13',ico:'☯️',hero:'Iron Fist',pow:'Chi Maîtrisé',desc:'5 sessions respiration',chk:function(d){return (d.breathCnt||0)>=5;}},
+  {id:'b14',ico:'🐜',hero:'Ant-Man',pow:'Micro-Victoire',desc:'500 XP cumulés',chk:function(d){return (d.totalXP||0)>=500;}},
+  {id:'b15',ico:'💚',hero:'Hulk',pow:'Force Brute',desc:'1500 XP cumulés',chk:function(d){return (d.totalXP||0)>=1500;}},
+  {id:'b16',ico:'🤖',hero:'Iron Man',pow:'Génie',desc:'3000 XP cumulés',chk:function(d){return (d.totalXP||0)>=3000;}},
+  {id:'b17',ico:'🦅',hero:'Falcon',pow:'L\'Envol',desc:'2 kg perdus',chk:function(d){return (d.kgLost||0)>=2;}},
+  {id:'b18',ico:'🌟',hero:'Avengers',pow:'Assemblés !',desc:'5 kg perdus',chk:function(d){return (d.kgLost||0)>=5;}}
+];
+
+// ═══════════════════════════════════════
+// MOBILITÉ MATINALE DÉTAILLÉE
+// ═══════════════════════════════════════
+var MORNING_EXOS = {
+  base: [
+    {k:'m1',emo:'🦶',titre:'Flexions de chevilles',desc:'Allongé, fléchis et pointe les pieds 20 fois de suite. Lent et contrôlé. Réveille la circulation.',duree:'2 min',pts:5},
+    {k:'m2',emo:'🌊',titre:'Rotations de chevilles',desc:'Assis au bord du lit, trace de grands cercles avec chaque cheville — 10 fois dans chaque sens.',duree:'1 min',pts:5},
+    {k:'m3',emo:'🧘',titre:'Genoux poitrine',desc:'Allongé sur le dos, ramène les deux genoux vers la poitrine, maintiens 30 secondes. Relâche les lombaires.',duree:'30 sec',pts:5},
+    {k:'m4',emo:'🐱',titre:'Chat / Vache',desc:'À 4 pattes, alterne dos rond (chat) puis dos creusé (vache). 10 répétitions lentes en respirant profondément.',duree:'1 min',pts:5}
+  ],
+  ankles: [
+    {k:'ma1',emo:'🦶',titre:'Massage voûte plantaire',desc:'Assis, pose le pied sur le genou opposé. Masse la voûte avec le pouce en cercles fermes pendant 30 secondes. Change de pied.',duree:'1 min',pts:5},
+    {k:'ma2',emo:'💃',titre:'Étirement mollet au mur',desc:'Mains au mur, jambe arrière tendue, talon bien au sol. Pousse le mur et sens le mollet s\'étirer. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'ma3',emo:'🏃',titre:'Montées sur pointes',desc:'Debout, monte lentement sur la pointe des pieds, maintiens 2 sec, redescends doucement. 20 répétitions.',duree:'1 min',pts:5}
+  ],
+  lower_back: [
+    {k:'mb1',emo:'🔄',titre:'Bascule lombaire douce',desc:'Allongé, genoux pliés, fais balancer les deux genoux vers la gauche puis la droite. 10 fois chaque côté, très doucement.',duree:'1 min',pts:5},
+    {k:'mb2',emo:'🧘',titre:'Étirement du piriforme',desc:'Allongé, cheville droite sur genou gauche, tire la jambe gauche vers toi jusqu\'à sentir les fessiers. 30 sec puis change.',duree:'1 min',pts:5},
+    {k:'mb3',emo:'💪',titre:'Gainage isométrique doux',desc:'Planche sur les coudes, dos plat, pas de cambrure. Tiens seulement 20 secondes. C\'est suffisant le matin.',duree:'20 sec',pts:5}
+  ],
+  knees: [
+    {k:'mc1',emo:'🦵',titre:'Glissements de jambe',desc:'Allongé sur le dos, glisse lentement le talon vers les fesses en pliant le genou, puis reviens. 15 fois par jambe.',duree:'1 min',pts:5},
+    {k:'mc2',emo:'🏃',titre:'Contraction quadriceps',desc:'Jambe tendue, contracte le quadriceps (cuisse) pendant 5 secondes, puis relâche. 10 fois par jambe. Renforce sans impact.',duree:'1 min',pts:5}
+  ],
+  shoulders: [
+    {k:'md1',emo:'🔄',titre:'Rotations d\'épaules',desc:'Assis bien droit, 10 rotations vers l\'avant puis 10 vers l\'arrière, lentes et amplifiées. Ouvre la cage thoracique.',duree:'1 min',pts:5},
+    {k:'md2',emo:'🤸',titre:'Pendule de Codman',desc:'Penché en avant, laisse le bras pendre naturellement, fais de petits cercles de plus en plus grands. 30 sec par bras.',duree:'1 min',pts:5}
+  ],
+  hips: [
+    {k:'me1',emo:'⚙️',titre:'Cercles de hanches debout',desc:'Mains sur les hanches, trace de grands cercles avec le bassin, 10 fois dans chaque sens. Imagine que tu as un hula hoop.',duree:'1 min',pts:5},
+    {k:'me2',emo:'🧘',titre:'Fente basse étirement psoas',desc:'Un genou au sol, autre pied en avant. Pousse les hanches vers l\'avant jusqu\'à sentir l\'avant de la cuisse arrière s\'étirer. 30 sec par côté.',duree:'1 min',pts:5}
+  ]
+};
+
+// ═══════════════════════════════════════
+// STRETCHING POST-SPORT PAR ACTIVITÉ
+// ═══════════════════════════════════════
+var STRETCH_DATA = {
+  padel: [
+    {k:'sp1',emo:'🤸',titre:'Rotation de tronc',desc:'Debout, bras écartés, tourne lentement le buste à gauche puis à droite. 10 fois chaque côté. Décompresse les vertèbres.',duree:'1 min',pts:5},
+    {k:'sp2',emo:'💪',titre:'Épaule croisée',desc:'Bras tendu à l\'horizontal, ramène-le vers toi avec l\'autre bras. Sens le deltoïde et le capuchon s\'étirer. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sp3',emo:'🖐️',titre:'Étirement poignet',desc:'Bras tendu devant toi, paume vers le haut. Avec l\'autre main, tire doucement les doigts vers toi. 30 sec par main.',duree:'1 min',pts:5},
+    {k:'sp4',emo:'🦵',titre:'Ischio-jambiers',desc:'Jambe tendue posée sur un banc ou le sol, orteils vers toi, penche le buste en avant jusqu\'à sentir l\'arrière de la cuisse. 45 sec par jambe.',duree:'1 min30',pts:5},
+    {k:'sp5',emo:'⚙️',titre:'Adducteurs en papillon',desc:'Assis, plantes de pieds jointes, genoux écartés. Pousse doucement les genoux vers le sol avec les coudes. 45 sec.',duree:'45 sec',pts:5},
+    {k:'sp6',emo:'🔄',titre:'Torsion lombaire assise',desc:'Jambes croisées, main gauche sur genou droit, tourne le buste vers la droite. 30 sec puis change de côté.',duree:'1 min',pts:5}
+  ],
+  footing: [
+    {k:'sf1',emo:'🦵',titre:'Quadriceps debout',desc:'Debout, attrape ta cheville dans ta main, genou dirigé vers le bas. Garde le genou sous la hanche. 45 sec par jambe.',duree:'1 min30',pts:5},
+    {k:'sf2',emo:'🏃',titre:'Mollet au mur',desc:'Orteils appuyés contre un mur ou une marche, talon au sol, jambe tendue. Sens le bas du mollet et le tendon d\'Achille. 45 sec par côté.',duree:'1 min30',pts:5},
+    {k:'sf3',emo:'🍑',titre:'Fessiers allongé',desc:'Allongé, cheville sur le genou opposé, tire la jambe vers toi. Sens le fessier et la hanche s\'ouvrir. 45 sec par côté.',duree:'1 min30',pts:5},
+    {k:'sf4',emo:'🦴',titre:'Lombaires — dos arrondi',desc:'Assis jambes tendues, arrondis le dos et penche le buste vers l\'avant. Ne force pas, laisse la gravité agir. 45 sec.',duree:'45 sec',pts:5},
+    {k:'sf5',emo:'🤸',titre:'Hip flexor en fente',desc:'Un genou au sol, l\'autre en avant. Bras du même côté que le genou au sol levé vers le ciel. Sens l\'avant de la hanche. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sf6',emo:'🦵',titre:'Bandelette IT Band',desc:'Debout, croise la jambe gauche derrière la droite, penche-toi sur le côté droit. Sens l\'extérieur de la cuisse. 30 sec par côté.',duree:'1 min',pts:5}
+  ],
+  kite: [
+    {k:'sk1',emo:'🌊',titre:'Cobra — ouverture dorsale',desc:'Allongé ventre, mains sous les épaules. Pousse le buste vers le haut, coudes semi-fléchis. Regard vers le haut. Maintiens 30 sec.',duree:'30 sec',pts:5},
+    {k:'sk2',emo:'💪',titre:'Pectoraux et biceps',desc:'Doigts croisés dans le dos, ouvre la poitrine vers le ciel. Sens les pectoraux et les biceps s\'étirer. 45 sec.',duree:'45 sec',pts:5},
+    {k:'sk3',emo:'⚙️',titre:'Rotation de hanche assise',desc:'Assis, jambe droite croisée sur la gauche, tourne le buste vers la droite avec le coude appuyé sur le genou. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sk4',emo:'🦵',titre:'Psoas en fente basse',desc:'Genou arrière au sol, pousse la hanche vers l\'avant. Bras levé du même côté pour amplifier l\'étirement. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sk5',emo:'🤸',titre:'Étirement latéral du tronc',desc:'Bras levé, incline-toi sur le côté opposé jusqu\'à sentir les intercostaux et le grand dorsal. 30 sec par côté.',duree:'1 min',pts:5}
+  ],
+  surf: [
+    {k:'ss1',emo:'🌊',titre:'Cobra yoga — 3 répétitions',desc:'Allongé ventre, pousse le buste, tête vers le haut. Maintiens 20 sec, redescends, répète 3 fois. Ouvre les épaules et les lombaires.',duree:'1 min',pts:5},
+    {k:'ss2',emo:'⚙️',titre:'Rotation thoracique assise',desc:'En tailleur, main derrière la tête, tourne le coude vers le plafond au maximum. 15 fois par côté. Mobilise le thorax.',duree:'1 min',pts:5},
+    {k:'ss3',emo:'💪',titre:'Ouverture pectoraux à la porte',desc:'Bras en L contre un mur, fais pivoter le corps pour ouvrir la poitrine. Parfait après avoir pagayé. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'ss4',emo:'🦵',titre:'Fente basse avec twist',desc:'En fente avant, main au sol côté jambe avant, l\'autre bras vers le ciel. Regard vers le haut. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'ss5',emo:'🧘',titre:'Enfant (Child\'s Pose)',desc:'Genoux au sol, bras tendus devant, front posé sur le sol ou un coussin. Respire profondément. 1 min complète.',duree:'1 min',pts:5}
+  ],
+  roller: [
+    {k:'sr1',emo:'🦵',titre:'Quadriceps debout',desc:'Attrape ta cheville, genou vers le bas. La cuisse s\'étire à l\'avant. 45 sec par jambe.',duree:'1 min30',pts:5},
+    {k:'sr2',emo:'🦶',titre:'Mobilité cheville assise',desc:'Assis, jambe croisée, fais des rotations d\'amplitude maximale puis fléchis/étends le pied. 1 min par cheville.',duree:'2 min',pts:5},
+    {k:'sr3',emo:'🍑',titre:'Fessiers allongé',desc:'Allongé, cheville sur genou opposé, tire vers toi. 45 sec par côté.',duree:'1 min30',pts:5},
+    {k:'sr4',emo:'🤸',titre:'IT Band — inclinaison latérale',desc:'Debout, croise les jambes, incline le corps sur le côté de la jambe avant. Sens l\'extérieur de la cuisse et la hanche. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sr5',emo:'💪',titre:'Rétraction scapulaire',desc:'Assis droit, coudes à 90°, ramène les omoplates ensemble comme si tu voulais tenir un crayon entre elles. Maintiens 10 sec, répète 10 fois.',duree:'1 min',pts:5}
+  ],
+  velo: [
+    {k:'sv1',emo:'🧘',titre:'Psoas en fente basse',desc:'Genou arrière au sol, pousse la hanche vers l\'avant. Le psoas est très sollicité en vélo. 45 sec par côté.',duree:'1 min30',pts:5},
+    {k:'sv2',emo:'🦵',titre:'Quadriceps debout',desc:'45 sec par jambe. Essentiel après une longue sortie vélo.',duree:'1 min30',pts:5},
+    {k:'sv3',emo:'🔄',titre:'Lombaires en bascule',desc:'Allongé, genoux pliés, bascule douce gauche/droite. 10 fois chaque côté.',duree:'1 min',pts:5},
+    {k:'sv4',emo:'🦴',titre:'Étirement thoracique',desc:'Mains jointes devant toi, dos arrondi, pousse les mains vers l\'avant. Sens le haut du dos s\'ouvrir. 30 sec.',duree:'30 sec',pts:5},
+    {k:'sv5',emo:'🦶',titre:'Mollets au mur',desc:'45 sec par côté. Incontournable après le vélo.',duree:'1 min30',pts:5}
+  ],
+  natation: [
+    {k:'sn1',emo:'💪',titre:'Épaule croisée',desc:'Bras à l\'horizontal, ramène vers toi avec l\'autre bras. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sn2',emo:'🤸',titre:'Rotation de tronc assise',desc:'En tailleur, main derrière la tête, rotation maximale du buste. 15 fois par côté.',duree:'1 min',pts:5},
+    {k:'sn3',emo:'🌊',titre:'Cobra',desc:'Allongé ventre, ouvre les épaules et les pectoraux. 30 sec × 2.',duree:'1 min',pts:5},
+    {k:'sn4',emo:'🦵',titre:'Ischio-jambiers',desc:'Jambe tendue, penche le buste en avant. 45 sec par jambe.',duree:'1 min30',pts:5},
+    {k:'sn5',emo:'🖐️',titre:'Étirement poignets',desc:'Bras tendu, tire les doigts vers toi avec l\'autre main. 30 sec par main.',duree:'1 min',pts:5}
+  ],
+  gainage: [
+    {k:'sg1',emo:'🧘',titre:'Child\'s Pose',desc:'Genoux au sol, bras tendus devant, front posé. Respire profondément dans le dos. 1 min.',duree:'1 min',pts:5},
+    {k:'sg2',emo:'🌊',titre:'Cobra → Chien tête en bas',desc:'Enchaîne cobra (buste relevé) et chien tête en bas (fesses en l\'air). 5 fois lentement en respirant.',duree:'1 min',pts:5},
+    {k:'sg3',emo:'🔄',titre:'Torsion assise',desc:'Jambes croisées, tourne le buste avec appui sur le genou. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sg4',emo:'💪',titre:'Grand dorsal bras levé',desc:'Bras tendu vers le haut, incline-toi sur le côté opposé. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sg5',emo:'🦵',titre:'Hip flexor en fente',desc:'Fente basse, genou au sol. 30 sec par côté.',duree:'1 min',pts:5}
+  ],
+  yoga: [
+    {k:'sy1',emo:'🧘',titre:'Savasana guidée',desc:'Allongé sur le dos, bras légèrement écartés. Ferme les yeux et scanne ton corps des pieds à la tête. 3 min de respiration profonde.',duree:'3 min',pts:10},
+    {k:'sy2',emo:'🌊',titre:'Étirement latéral',desc:'Bras levé, incline-toi sur le côté en maintenant l\'ancrage du bassin. 30 sec par côté.',duree:'1 min',pts:5}
+  ],
+  mobilite: [
+    {k:'sm1',emo:'🧘',titre:'Savasana guidée',desc:'Allongé sur le dos, respiration profonde, scan corporel. 3 min.',duree:'3 min',pts:10},
+    {k:'sm2',emo:'🌊',titre:'Étirement latéral',desc:'Bras levé, inclinaison du buste sur le côté. 30 sec par côté.',duree:'1 min',pts:5}
+  ],
+  marche: [
+    {k:'sw1',emo:'🦶',titre:'Mollets',desc:'Mains au mur, talon au sol, jambe arrière tendue. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sw2',emo:'🍑',titre:'Fessiers allongé',desc:'Allongé, cheville sur genou opposé, tire vers toi. 30 sec par côté.',duree:'1 min',pts:5},
+    {k:'sw3',emo:'🦴',titre:'Lombaires doux',desc:'Allongé, bascule des genoux gauche/droite. 10 fois.',duree:'1 min',pts:5}
+  ],
+  footing_stretch: [] // alias
+};
+
+// Programme 8 semaines
+var PROG = [
+  {w:1,ph:1,title:'S1 — Réveil en Douceur',focus:'Observer, routine matinale, réduire le sucre',nutr:'Observer sans juger. Préparer la gourde anti-craving.',mental:'Pas de jugement. Juste observer.',
+   days:[{d:'Lun',act:'Marche active',base:25,det:'Pleine conscience, sans téléphone',int:'easy'},{d:'Mar',act:'Padel + Mobilité',base:70,det:'Padel + 10 min mobilité après',int:'med'},{d:'Mer',act:'Footing léger',base:25,det:'FC max 130-140 bpm',int:'easy'},{d:'Jeu',act:'Repos actif',base:15,det:'Étirements + respiration',int:'easy'},{d:'Ven',act:'Activité plaisir',base:0,det:'Kite, surf, roller...',int:'med'},{d:'Sam',act:'Footing',base:25,det:'Allure confortable',int:'easy'},{d:'Dim',act:'Récupération',base:0,det:'Marche 20 min si envie',int:'easy'}]},
+  {w:2,ph:1,title:'S2 — Premier Changement',focus:'−1 boisson/jour, mobilité 4x/sem',nutr:'Remplacer 1 boisson → eau pétillante citron.',mental:'Je commence. Je prends soin de moi.',
+   days:[{d:'Lun',act:'Marche active',base:30,det:'Rythme plus soutenu',int:'easy'},{d:'Mar',act:'Padel + Mobilité',base:70,det:'+2 étirements soir',int:'med'},{d:'Mer',act:'Run / Marche',base:30,det:'3 min run / 2 min marche × 5',int:'easy'},{d:'Jeu',act:'Mobilité soir',base:12,det:'6 étirements complets',int:'easy'},{d:'Ven',act:'Activité plaisir',base:0,det:'Kite, surf, roller',int:'med'},{d:'Sam',act:'Footing',base:30,det:'Allure constante',int:'easy'},{d:'Dim',act:'Repos + Bilan',base:0,det:'3 victoires de la semaine',int:'easy'}]},
+  {w:3,ph:1,title:'S3 — Montée en Puissance',focus:'−2 boissons/jour, gainage intro',nutr:'Max 2 boissons/jour. Protéines le matin.',mental:'Je vois la différence.',
+   days:[{d:'Lun',act:'Marche active',base:35,det:'Terrain varié',int:'easy'},{d:'Mar',act:'Padel + Mobilité',base:70,det:'Routine complète obligatoire',int:'med'},{d:'Mer',act:'Run / Marche',base:35,det:'5 min run / 2 min marche × 4',int:'easy'},{d:'Jeu',act:'Gainage intro',base:15,det:'3 exercices — découverte douce',int:'easy'},{d:'Ven',act:'Activité plaisir',base:0,det:'La meilleure de la semaine',int:'med'},{d:'Sam',act:'Footing',base:35,det:'35 min sans marcher !',int:'easy'},{d:'Dim',act:'Repos actif',base:15,det:'Respiration + mobilité',int:'easy'}]},
+  {w:4,ph:2,title:'S4 — Élan',focus:'Gainage 2x/sem, zéro sucre avant 15h',nutr:'Zéro sucre avant 15h. 3 repas structurés.',mental:'Je suis dans le rythme.',
+   days:[{d:'Lun',act:'Footing intervalles',base:40,det:'5 min run / 2 min marche × 5',int:'med'},{d:'Mar',act:'Padel + Mobilité',base:70,det:'Jouer à fond. Routine soir.',int:'med'},{d:'Mer',act:'Gainage',base:20,det:'Circuit 7 exos × 3 séries',int:'med'},{d:'Jeu',act:'Marche / Vélo',base:40,det:'Récupération active',int:'easy'},{d:'Ven',act:'Activité plaisir',base:0,det:'Kite, surf, roller',int:'med'},{d:'Sam',act:'Footing continu',base:35,det:'Pas de chrono',int:'easy'},{d:'Dim',act:'Récupération',base:15,det:'Routine soir + bilan',int:'easy'}]},
+  {w:5,ph:2,title:'S5 — Régularité',focus:'3x gainage, footing 35 min continu',nutr:'Max 1 boisson sucrée/jour.',mental:'Je contrôle. Les cravings diminuent.',
+   days:[{d:'Lun',act:'Footing continu',base:35,det:'Sans marcher.',int:'med'},{d:'Mar',act:'Gainage + Padel',base:80,det:'Gainage matin, padel soir',int:'med'},{d:'Mer',act:'Footing / Vélo',base:35,det:'Tempo régulier',int:'med'},{d:'Jeu',act:'Gainage',base:20,det:'Planche 40 sec.',int:'med'},{d:'Ven',act:'Activité plaisir',base:0,det:'Récompense de la semaine',int:'med'},{d:'Sam',act:'Gainage + Mobilité',base:35,det:'Circuit + étirements',int:'med'},{d:'Dim',act:'Récupération',base:0,det:'3 victoires de la semaine.',int:'easy'}]},
+  {w:6,ph:2,title:'S6 — Force',focus:'Footing 40 min, gainage avancé',nutr:'1 boisson tous les 2 jours.',mental:'Je suis fort. Mon corps a changé.',
+   days:[{d:'Lun',act:'Footing continu',base:40,det:'Finir plus vite sur les 5 dernières min',int:'med'},{d:'Mar',act:'Padel compétitif',base:60,det:'Mobilité après.',int:'med'},{d:'Mer',act:'Gainage avancé',base:25,det:'+1 série vs S4',int:'med'},{d:'Jeu',act:'Roller / Natation',base:45,det:'Plaisir pur.',int:'easy'},{d:'Ven',act:'Activité plaisir',base:0,det:'Meilleure séance',int:'med'},{d:'Sam',act:'Footing + Mobilité',base:55,det:'40 min + étirements',int:'med'},{d:'Dim',act:'Repos actif',base:20,det:'Marche, respiration.',int:'easy'}]},
+  {w:7,ph:3,title:'S7 — Ancrage',focus:'Fractionné doux, sucre occasionnel',nutr:'Boissons sucrées : choix conscient.',mental:'Je suis libre. Le sucre ne commande plus.',
+   days:[{d:'Lun',act:'Fractionné',base:40,det:'3 × 8 min soutenu / 3 min récup',int:'med'},{d:'Mar',act:'Padel compétitif',base:60,det:'Niveau supérieur grâce au gainage !',int:'med'},{d:'Mer',act:'Gainage complet',base:25,det:'Circuit + planche 45 sec.',int:'med'},{d:'Jeu',act:'Roller / Vélo',base:45,det:'Endurance plaisir.',int:'easy'},{d:'Ven',act:'Kite / Surf',base:0,det:'Récompense de tout le travail !',int:'hard'},{d:'Sam',act:'Sortie longue',base:55,det:'Terrain varié, nature',int:'med'},{d:'Dim',act:'Yoga + Bilan',base:20,det:'3 victoires + avant/après.',int:'easy'}]},
+  {w:8,ph:3,title:'S8 — Liberté & Projection',focus:'Consolider, célébrer, planifier',nutr:'Alimentation intuitive. Liberté totale.',mental:'Je suis meilleur. J\'ai tenu.',
+   days:[{d:'Lun',act:'Fractionné 45 min',base:45,det:'4 × 8 min. Ressens ta puissance !',int:'hard'},{d:'Mar',act:'Padel + Bilan',base:60,det:'Comparer avec S1.',int:'med'},{d:'Mer',act:'Gainage final',base:25,det:'Planche 45-60 sec.',int:'med'},{d:'Jeu',act:'Activité libre',base:45,det:'Ce qui te fait envie.',int:'med'},{d:'Ven',act:'Session plaisir',base:0,det:'Kite, surf... La fête ! 🎉',int:'hard'},{d:'Sam',act:'Sortie contemplative',base:60,det:'Contemple le chemin.',int:'med'},{d:'Dim',act:'Bilan final',base:30,det:'Photos, mesures, victoires.',int:'easy'}]}
+];
+
+// ═══════════════════════════════════════
+// AUTH LOGIC
+// ═══════════════════════════════════════
+var pendingProfile = null;
+
+function showAuthPanel(which) {
+  document.getElementById('authHome').style.display = which === 'home' ? '' : 'none';
+  document.getElementById('authLogin').style.display = which === 'login' ? '' : 'none';
+  document.getElementById('authCode').style.display = which === 'code' ? '' : 'none';
+}
+
+function startOnboarding() {
+  document.getElementById('AUTH').style.display = 'none';
+  document.getElementById('OB').style.display = 'flex';
+  obStep = 1;
+  renderDots();
+  document.querySelectorAll('.ob-step').forEach(function(s, i) {
+    s.classList.toggle('active', i === 0);
+  });
+  document.getElementById('oBk').style.display = 'none';
+  document.getElementById('oNx').textContent = 'Continuer →';
+}
+
+function doLogin() {
+  var name = document.getElementById('loginName').value.trim();
+  var code = document.getElementById('loginCode').value.trim();
+  var err = document.getElementById('loginErr');
+  err.textContent = '';
+  if (!name || !code) { err.textContent = 'Prénom et code requis.'; return; }
+  if (!/^\d{6}$/.test(code)) { err.textContent = 'Le code doit contenir 6 chiffres.'; return; }
+
+  apiCall('POST', '/api/auth/login', { name: name, code: code }, function(e, data) {
+    if (e || !data) {
+      // Fallback local si API hors ligne
+      var local = load();
+      if (local.user && local.user.name === name) {
+        launchApp();
+        showToast('✅ Connecté en mode local');
+      } else {
+        err.textContent = 'Impossible de se connecter (API hors ligne).';
+      }
+      return;
+    }
+    if (data.error) { err.textContent = data.error; return; }
+    setToken(data.token);
+    var d = load();
+    d.user = data.user.profile;
+    d.user.name = data.user.name;
+    d.user.createdAt = data.user.startDate;
+    d.totalXP = data.user.totalXP || 0;
+    d.maxStreak = data.user.maxStreak || 0;
+    d.morningCnt = data.user.morningCnt || 0;
+    d.zeroDays = data.user.zeroDays || 0;
+    d.water8 = data.user.water8 || 0;
+    d.breathCnt = data.user.breathCnt || 0;
+    d.kgLost = data.user.kgLost || 0;
+    d.earnedBadges = data.user.earnedBadges || [];
+    d.startDate = data.user.startDate ? data.user.startDate.split('T')[0] : today();
+    d.measures = data.user.measures || [];
+    // Jours / semaines (Map MongoDB → objet JS)
+    if (data.user.days) {
+      d.days = {};
+      Object.keys(data.user.days).forEach(function(k) { d.days[k] = data.user.days[k]; });
+    }
+    if (data.user.weeks) {
+      d.weeks = {};
+      Object.keys(data.user.weeks).forEach(function(k) { d.weeks[k] = data.user.weeks[k]; });
+    }
+    if (data.user.acts) {
+      d.acts = {};
+      Object.keys(data.user.acts).forEach(function(k) { d.acts[k] = data.user.acts[k]; });
+    }
+    save(d);
+    launchApp();
+    showToast('🦸 Bienvenue ' + name + ' !');
+  });
+}
+
+function doRegister() {
+  var c1 = document.getElementById('newCode1').value.trim();
+  var c2 = document.getElementById('newCode2').value.trim();
+  var err = document.getElementById('codeErr');
+  err.textContent = '';
+  if (!/^\d{6}$/.test(c1)) { err.textContent = 'Le code doit contenir exactement 6 chiffres.'; return; }
+  if (c1 !== c2) { err.textContent = 'Les deux codes ne correspondent pas.'; return; }
+  if (!pendingProfile) { err.textContent = 'Profil introuvable, recommence l\'inscription.'; return; }
+
+  apiCall('POST', '/api/auth/register', { name: pendingProfile.name, code: c1, profile: pendingProfile }, function(e, data) {
+    if (e || !data) {
+      // Fallback : sauvegarde locale sans serveur
+      var d = {};
+      d.user = pendingProfile;
+      d.startDate = today();
+      d.totalXP = 0; d.maxStreak = 0; d.morningCnt = 0;
+      d.zeroDays = 0; d.water8 = 0; d.breathCnt = 0; d.kgLost = 0;
+      d.earnedBadges = []; d.acts = {}; d.days = {}; d.weeks = {}; d.measures = [];
+      save(d);
+      launchApp();
+      showToast('🦸 Profil créé en mode local (API hors ligne)');
+      return;
+    }
+    if (data.error) { err.textContent = data.error; return; }
+    setToken(data.token);
+    var d = {};
+    d.user = pendingProfile;
+    d.startDate = today();
+    d.totalXP = 0; d.maxStreak = 0; d.morningCnt = 0;
+    d.zeroDays = 0; d.water8 = 0; d.breathCnt = 0; d.kgLost = 0;
+    d.earnedBadges = []; d.acts = {}; d.days = {}; d.weeks = {}; d.measures = [];
+    save(d);
+    launchApp();
+    showToast('🦸 Bienvenue ' + pendingProfile.name + ' ! Ton aventure commence !');
+  });
+}
+
+function doLogout() {
+  if (confirm('Se déconnecter ?')) {
+    clearToken();
+    localStorage.removeItem('sport_v2');
+    location.reload();
+  }
+}
+
+function launchApp() {
+  document.getElementById('AUTH').style.display = 'none';
+  document.getElementById('OB').style.display = 'none';
+  document.getElementById('APP').style.display = 'block';
+  initApp();
+}
+
+// ═══════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════
+var obStep = 1;
+var OB_MAX = 7;
+
+function renderDots() {
+  var el = document.getElementById('obDots');
+  el.innerHTML = '';
+  for (var i = 1; i <= OB_MAX; i++) {
+    var d = document.createElement('div');
+    d.className = 'od' + (i === obStep ? ' active' : i < obStep ? ' done' : '');
+    el.appendChild(d);
+  }
+}
+
+function selOpt(el) {
+  var g = el.dataset.g;
+  document.querySelectorAll('.ob-opt[data-g="' + g + '"]').forEach(function(e) { e.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+function togCb(el) { el.classList.toggle('sel'); }
+function selSingle(el, g) {
+  document.querySelectorAll('.ob-cb[data-g="' + g + '"]').forEach(function(e) { e.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+function obNext() {
+  if (obStep === 1) {
+    var n = document.getElementById('oName').value.trim();
+    var a = document.getElementById('oAge').value;
+    var h = document.getElementById('oHeight').value;
+    var w = document.getElementById('oWeight').value;
+    if (!n || !a || !h || !w) { showToast('⚠️ Remplis tous les champs *'); return; }
+  }
+  if (obStep === 2 && !document.querySelector('.ob-opt[data-g="level"].sel')) { showToast('⚠️ Choisis ton niveau'); return; }
+  if (obStep === 4 && (!document.querySelector('.ob-opt[data-g="sugar"].sel') || !document.querySelector('.ob-opt[data-g="snack"].sel'))) { showToast('⚠️ Réponds aux deux questions'); return; }
+  if (obStep === 6 && !document.querySelector('.ob-opt[data-g="goal"].sel')) { showToast('⚠️ Choisis ton objectif'); return; }
+  if (obStep === 6) buildSum();
+  if (obStep === OB_MAX) { doLaunchOB(); return; }
+  obStep++;
+  document.querySelectorAll('.ob-step').forEach(function(s, i) { s.classList.toggle('active', i + 1 === obStep); });
+  document.getElementById('oBk').style.display = obStep > 1 ? '' : 'none';
+  document.getElementById('oNx').textContent = obStep === OB_MAX ? '🚀 Choisir mon code →' : 'Continuer →';
+  renderDots();
+  window.scrollTo(0, 0);
+}
+
+function obPrev() {
+  if (obStep <= 1) return;
+  obStep--;
+  document.querySelectorAll('.ob-step').forEach(function(s, i) { s.classList.toggle('active', i + 1 === obStep); });
+  document.getElementById('oBk').style.display = obStep > 1 ? '' : 'none';
+  document.getElementById('oNx').textContent = 'Continuer →';
+  renderDots();
+  window.scrollTo(0, 0);
+}
+
+function buildSum() {
+  var name = document.getElementById('oName').value.trim();
+  var age = document.getElementById('oAge').value;
+  var h = document.getElementById('oHeight').value;
+  var w = document.getElementById('oWeight').value;
+  var gw = document.getElementById('oGoalW').value || (parseFloat(w) - 5);
+  var imc = (parseFloat(w) / Math.pow(parseFloat(h) / 100, 2)).toFixed(1);
+  var lvlEl = document.querySelector('.ob-opt[data-g="level"].sel');
+  var goalEl = document.querySelector('.ob-opt[data-g="goal"].sel');
+  var sugarEl = document.querySelector('.ob-opt[data-g="sugar"].sel');
+  var daysEl = document.querySelector('.ob-cb[data-g="days"].sel');
+  var acts = Array.from(document.querySelectorAll('.ob-cb[data-g="act"].sel')).map(function(e) { return e.dataset.v; });
+  var lm = { beginner: 'Débutant', moderate: 'Actif modéré', active: 'Actif régulier', athlete: 'Sportif confirmé' };
+  var gm = { weight: 'Perte de poids', health: 'Santé & bien-être', perf: 'Performance', stress: 'Gestion stress' };
+  document.getElementById('obSum').innerHTML =
+    '<div class="ob-sum-row"><span class="ob-sum-l">👤 Profil</span><span class="ob-sum-v">' + name + ', ' + age + ' ans · ' + h + 'cm · ' + w + 'kg</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">🧮 IMC</span><span class="ob-sum-v">' + imc + '</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">🎯 Objectif poids</span><span class="ob-sum-v">' + gw + ' kg</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">⚡ Niveau</span><span class="ob-sum-v">' + (lvlEl ? lm[lvlEl.dataset.v] : '—') + '</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">🎯 Mission</span><span class="ob-sum-v">' + (goalEl ? gm[goalEl.dataset.v] : '—') + '</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">🥤 Sucre déclaré</span><span class="ob-sum-v">' + (sugarEl ? sugarEl.dataset.v : '—') + '/j</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">📅 Jours/sem</span><span class="ob-sum-v">' + (daysEl ? daysEl.dataset.v : 4) + ' jours</span></div>' +
+    '<div class="ob-sum-row"><span class="ob-sum-l">🏃 Activités</span><span class="ob-sum-v">' + (acts.length ? acts.join(', ') : 'Non précisé') + '</span></div>';
+}
+
+function doLaunchOB() {
+  var lvlEl = document.querySelector('.ob-opt[data-g="level"].sel');
+  var goalEl = document.querySelector('.ob-opt[data-g="goal"].sel');
+  var sugarEl = document.querySelector('.ob-opt[data-g="sugar"].sel');
+  var snackEl = document.querySelector('.ob-opt[data-g="snack"].sel');
+  var daysEl = document.querySelector('.ob-cb[data-g="days"].sel');
+  var acts = Array.from(document.querySelectorAll('.ob-cb[data-g="act"].sel')).map(function(e) { return e.dataset.v; });
+  var customAct = document.getElementById('oCustomAct').value.trim();
+  if (customAct) acts.push(customAct);
+
+  pendingProfile = {
+    name: document.getElementById('oName').value.trim(),
+    age: parseInt(document.getElementById('oAge').value),
+    height: parseInt(document.getElementById('oHeight').value),
+    weight: parseFloat(document.getElementById('oWeight').value),
+    goalWeight: parseFloat(document.getElementById('oGoalW').value) || (parseFloat(document.getElementById('oWeight').value) - 5),
+    level: lvlEl ? lvlEl.dataset.v : 'moderate',
+    activities: acts,
+    sugarLevel: sugarEl ? sugarEl.dataset.v : '2-3',
+    snackLevel: snackEl ? snackEl.dataset.v : 'medium',
+    stressLevel: parseInt(document.getElementById('oStress').value),
+    sleepLevel: parseInt(document.getElementById('oSleep').value),
+    painZones: Array.from(document.querySelectorAll('.ob-cb[data-g="pain"].sel')).map(function(e) { return e.dataset.v; }),
+    mainGoal: goalEl ? goalEl.dataset.v : 'health',
+    daysPerWeek: daysEl ? parseInt(daysEl.dataset.v) : 4,
+    createdAt: new Date().toISOString()
+  };
+
+  document.getElementById('OB').style.display = 'none';
+  document.getElementById('AUTH').style.display = 'flex';
+  showAuthPanel('code');
+}
+
+// ═══════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════
+function load() {
+  try { return JSON.parse(localStorage.getItem('sport_v2') || '{}'); } catch (e) { return {}; }
+}
+function save(d) {
+  d._lastSaved = new Date().toISOString();
+  localStorage.setItem('sport_v2', JSON.stringify(d));
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+function ol(o) { return o ? Object.keys(o).length : 0; }
+
+// ═══════════════════════════════════════
+// INIT APP
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', function() {
+  renderDots();
+  var d = load();
+  if (getToken() && d.user) {
+    launchApp();
+  } else if (d.user && !getToken()) {
+    // Mode local sans token
+    launchApp();
+  } else {
+    document.getElementById('AUTH').style.display = 'flex';
+  }
+});
+
+function initApp() {
+  var d = load();
+  if (!d.user) return;
+  buildTodayUI();
+  updateHeader();
+  updateStats();
+  renderWeeks();
+  buildProgSelector();
+  renderBadges();
+  updateMeasures();
+  setQuote();
+  document.getElementById('pChip').textContent = (d.user.name || 'Héros') + ' 👤';
+  restoreToday();
+  buildAlerts();
+  buildConseil();
+  setSyncDot(!!getToken());
+}
+
+function setQuote() {
+  var q = QUOTES[new Date().getDate() % QUOTES.length];
+  document.getElementById('dQuote').textContent = '"' + q[0] + '"';
+  document.getElementById('dDate').textContent = '— ' + q[1] + ' · ' + new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+function getUser() { return load().user || {}; }
+
+function weekCfg(wn) {
+  var u = getUser();
+  var lm = { beginner: 0.75, moderate: 1.0, active: 1.1, athlete: 1.25 }[u.level] || 1.0;
+  var targets = { '0-1': [1, 1, 1, 0, 0, 0, 0, 0], '2-3': [3, 3, 2, 1, 1, 0, 0, 0], '4+': [6, 5, 4, 3, 2, 1, 0, 0] };
+  var st = targets[u.sugarLevel] || targets['2-3'];
+  var base = [25, 30, 35, 40, 40, 45, 45, 50];
+  return {
+    cardio: Math.round(base[wn - 1] * lm),
+    sugarTarget: st[wn - 1],
+    hasPain: u.painZones && u.painZones.length > 0 && u.painZones.indexOf('none') === -1,
+    stressMode: (u.stressLevel || 0) >= 7
+  };
+}
+
+function buildAlerts() {
+  var d = load(); var wn = getCurWeek(d); var cfg = weekCfg(wn); var html = '';
+  if (cfg.hasPain) html += '<div class="pal inf">🦶 <span><strong>Priorité mobilité</strong> — Routine matinale avant de poser le pied par terre.</span></div>';
+  if (cfg.stressMode) html += '<div class="pal wrn">🧘 <span><strong>Mode Anti-Stress actif</strong> — Respiration 4-7-8 dès le matin.</span></div>';
+  if (cfg.sugarTarget === 0) html += '<div class="pal inf">🎯 <span><strong>S' + wn + ' : Objectif Zéro Sucre !</strong></span></div>';
+  else html += '<div class="pal wrn">🥤 <span><strong>Objectif S' + wn + ' :</strong> Max <strong>' + cfg.sugarTarget + '</strong> boisson(s)/jour.</span></div>';
+  document.getElementById('alerts').innerHTML = html;
+}
+
+function buildConseil() {
+  var d = load();
+  var wn = getCurWeek(d);
+  var streak = calcStreak(d);
+  var td = d.days && d.days[today()] ? d.days[today()] : {};
+  var stress = td.stress || (d.user && d.user.stressLevel) || 5;
+  var pain = td.pain || 5;
+  var energy = td.energy || 5;
+
+  var type = 'ok', ico = '💡', titre = '', txt = '';
+
+  if (streak >= 7) {
+    type = 'ok'; ico = '🔥';
+    titre = streak + ' jours d\'affilée — Tu es en feu !';
+    txt = 'Ta régularité est remarquable. C\'est exactement ce qui fait la différence sur 8 semaines. Continue !';
+  } else if (stress >= 8) {
+    type = 'alert'; ico = '🧘';
+    titre = 'Stress élevé détecté — priorité récupération';
+    txt = 'Le cortisol élevé bloque directement la perte de poids. Aujourd\'hui : respiration 4-7-8, marche lente, pas d\'effort intense.';
+  } else if (pain >= 7) {
+    type = 'warn'; ico = '🦶';
+    titre = 'Douleurs importantes — mode récupération';
+    txt = 'Ne saute pas la routine matinale. Favorise la mobilité douce et le stretching. Écoute ton corps — c\'est de la stratégie, pas de la faiblesse.';
+  } else if (energy <= 3) {
+    type = 'warn'; ico = '⚡';
+    titre = 'Énergie basse — reste actif en douceur';
+    txt = 'Une marche de 20 min vaut mieux que zéro. L\'activité légère regenerère l\'énergie mieux que le repos total.';
